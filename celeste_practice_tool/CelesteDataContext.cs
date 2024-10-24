@@ -49,7 +49,8 @@ namespace celeste_practice_tool
             {
                 roomId = value;
                 invokePropertyChange("RoomName");
-                }
+                invokePropertyChange("IndexOfStat");
+            }
         }
         public int ChapterDeathCount
         {
@@ -70,6 +71,8 @@ namespace celeste_practice_tool
             }
         }
         public DeathStat[] DeathStats => deathStatDict.Values.ToArray();
+        public int IndexOfStat => deathStatDict.Keys.Select((key, index) => (key, index))
+            .Where(p => p.key.Equals(roomId)).Select(p => p.index).FirstOrDefault(-1);
 
         // implement INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

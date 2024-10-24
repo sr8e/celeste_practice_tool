@@ -13,5 +13,18 @@ namespace celeste_practice_tool
             InitializeComponent();
             DataContext = cp.Context;
         }
+
+        private void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid dg = (DataGrid)sender;
+            if (dg.SelectedIndex != -1)
+            {
+                dg.Dispatcher.Invoke(() =>
+                {
+                    dg.UpdateLayout();
+                    dg.ScrollIntoView(dg.SelectedItem);
+                });
+            }
+        }
     }
 }
