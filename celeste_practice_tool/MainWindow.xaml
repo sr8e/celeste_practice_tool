@@ -16,6 +16,26 @@
     </Window.Resources>
 
     <Grid>
+
+        <!-- resource -->
+        <Grid.Resources>
+            <DataTemplate x:Key="DateTemplate" >
+                <Grid>
+                    <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{Binding SuccessRate, Converter={StaticResource GraphWidthConverter}, ConverterParameter=left}"/>
+                        <ColumnDefinition Width="{Binding SuccessRate, Converter={StaticResource GraphWidthConverter}, ConverterParameter=right}"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Column="0" Fill="{Binding SuccessRate, Converter={StaticResource GraphColorConverter}}"/>
+                        <Rectangle Grid.Column="1" Fill="White"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock Text="{Binding SuccessRate, Converter={StaticResource PercentageConverter}}" TextAlignment="Right"/>
+                    </Grid>
+                </Grid>
+            </DataTemplate>
+        </Grid.Resources>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition/>

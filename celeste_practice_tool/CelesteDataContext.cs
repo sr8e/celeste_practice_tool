@@ -168,6 +168,7 @@ namespace celeste_practice_tool
         public int TotalDeath => CurrentDeath + PrevDeath;
         public int PrevSuccess { get; set; }
         public int TotalSuccess => PrevSuccess + (Passed ? 1 : 0);
+        public float SuccessRate => (TotalDeath + TotalSuccess) > 0 ? (float)TotalSuccess / (TotalDeath + TotalSuccess) : 0f;
 
         public void commit()
         {
