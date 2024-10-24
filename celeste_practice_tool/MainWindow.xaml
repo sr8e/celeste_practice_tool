@@ -6,6 +6,15 @@
         xmlns:local="clr-namespace:celeste_practice_tool"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <local:GraphWidthConverter x:Key="GraphWidthConverter"/>
+        <local:GraphColorConverter x:Key="GraphColorConverter"/>
+        <local:PercentageConverter x:Key="PercentageConverter"/>
+        <local:EnumNameConverter x:Key="EnumNameConverter"/>
+        <local:TimerConverter x:Key="TimerConverter"/>
+        <local:NullableStringConverter x:Key="NullStrConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
