@@ -6,6 +6,7 @@ namespace celeste_practice_tool
     public class CelesteDataContext : INotifyPropertyChanged
     {
         private int chapterId = -2;
+        private int chapterSide = -1;
         private RoomIdentifier? roomId;
         private int cdeath = -1;
         private int rdeath = -1;
@@ -14,46 +15,60 @@ namespace celeste_practice_tool
         private Dictionary<RoomIdentifier, DeathStat> deathStatDict = new();
 
         // properties
-        public string ChapterName
+        public Chapters ChapterName
         {
-            get
+            get { return (Chapters)chapterId; }
+            set
             {
-                string? val = Enum.GetName(typeof(Chapters), chapterId);
-                if (val == null)
-                {
-                    return "";
-                }
-                return val;
+                chapterId = (int)value;
+                invokePropertyChange("ChapterName");
             }
         }
-        public string ChapterTime
+        public Sides ChapterSide
         {
-            get
+            get { return (Sides)chapterSide; }
+            set
             {
-                TimeSpan t = TimeSpan.FromMilliseconds(chapterTime);
-                if (t.Hours > 0)
-                {
-                    return $"{t.Hours}:{t.Minutes:d2}:{t.Seconds:d2}.{t.Milliseconds:d3}";
-                }
-                else
-                {
-                    return $"{t.Minutes}:{t.Seconds:d2}.{t.Milliseconds:d3}";
-                }
+                chapterSide = (int)value;
+                invokePropertyChange("ChapterSide");
             }
         }
-        public string RoomName
+        public long ChapterTime
         {
-            get
+            get { return chapterTime; }
+            set
             {
-                if (roomId == null)
-                {
-                    return string.Empty;
-                }
-                return roomId.ToString();
+                chapterTime = value;
+                invokePropertyChange("ChapterTime");
             }
         }
-        public int ChapterDeathCount => cdeath;
-        public int RoomDeathCount => rdeath;
+        public RoomIdentifier? RoomName
+        {
+            get { return roomId; }
+            set
+            {
+                roomId = value;
+                invokePropertyChange("RoomName");
+                }
+        }
+        public int ChapterDeathCount
+        {
+            get { return int.Max(0, cdeath); }
+            set
+            {
+                cdeath = value;
+                invokePropertyChange("ChapterDeathCount");
+            }
+        }
+        public int RoomDeathCount
+        {
+            get { return int.Max(0, rdeath); }
+            set
+            {
+                rdeath = value;
+                invokePropertyChange("RoomDeathCount");
+            }
+        }
         public DeathStat[] DeathStats => deathStatDict.Values.ToArray();
 
         // implement INotifyPropertyChanged
@@ -76,7 +91,7 @@ namespace celeste_practice_tool
             deathStatDict.Values.ToList().ForEach(v => v.commit());
             invokePropertyChange("DeathStats");
         }
-        public void update(int cid, RoomIdentifier room, int cd, int rd, long ctime, bool comp)
+        public void update(int cid, int side, RoomIdentifier room, int cd, int rd, long ctime, bool comp)
         {
             if (comp && !compFlag)
             {
@@ -89,6 +104,10 @@ namespace celeste_practice_tool
                 chapterId = cid;
                 invokePropertyChange("ChapterName");
             }
+            if (side != chapterSide)
+            {
+                ChapterSide = (Sides)side;
+            }
             if (ctime < chapterTime) // reset
             {
                 // chapter death will be reset, but room death won't be reset
@@ -98,11 +117,10 @@ namespace celeste_practice_tool
                 {
                     Debug.WriteLine($"reset condition t={ctime} cd={cd} rd={rd}");
                     commitCurrentStat(false);
-                    roomId = null;
+                    RoomName = null;
                 }
             }
-            chapterTime = ctime;
-            invokePropertyChange("ChapterTime");
+            ChapterTime = ctime;
 
             if (!room.Equals(roomId) && !room.isEmpty() && chapterTime > 0) // room transition
             {
@@ -127,19 +145,16 @@ namespace celeste_practice_tool
                     rdeath = -1;
                     invokePropertyChange("DeathStats");
                 }
-                roomId = room;
-                invokePropertyChange("RoomName");
+                RoomName = room;
             }
             if (cd - cdeath == 1 || cdeath == -1)
             {
-                cdeath = cd;
-                invokePropertyChange("ChapterDeathCount");
+                ChapterDeathCount = cd;
             }
 
             if (rd - rdeath == 1 || rdeath == -1)
             {
-                rdeath = rd;
-                invokePropertyChange("RoomDeathCount");
+                RoomDeathCount = rd;
             }
         }
     }
@@ -191,19 +206,37 @@ namespace celeste_practice_tool
     }
     public enum Chapters
     {
-        // todo add description
         Menu = -1,
         Prologue = 0,
+        [Description("Forsaken City")]
         ForsakenCity = 1,
+        [Description("Old Site")]
         OldSite = 2,
+        [Description("Celestial Resort")]
         CelestialResort = 3,
+        [Description("Golden Ridge")]
         GoldenRidge = 4,
+        [Description("Mirror Temple")]
         MirrorTemple = 5,
         Reflection = 6,
+        [Description("The Summit")]
         TheSummit = 7,
         Epilogue = 8,
         Core = 9,
         Farewell = 10
     }
+
+    public enum Sides
+    {
+        [Description("-")]
+        None = -1,
+        [Description("A Side")]
+        ASide = 0,
+        [Description("B Side")]
+        BSide = 1,
+        [Description("C Side")]
+        CSide = 2
+    }
+
 }
 

@@ -83,7 +83,7 @@ namespace celeste_practice_tool
             {
                 return;
             }
-            Context.update(getChapterId(), getRoomIdentifier(), getChapterDeaths(), getRoomDeaths(), getChapterTimeMillis(), getChapterCompleted());
+            Context.update(getChapterId(), getChapterSide(), getRoomIdentifier(), getChapterDeaths(), getRoomDeaths(), getChapterTimeMillis(), getChapterCompleted());
         }
 
         public int getChapterDeaths()
@@ -103,6 +103,10 @@ namespace celeste_practice_tool
         public int getChapterId()
         {
             return MemoryAccessor.ReadInt(proc.Handle, basePtr, refoffset + 0x1c, 0x18);
+        }
+        public int getChapterSide()
+        {
+            return MemoryAccessor.ReadInt(proc.Handle, basePtr, refoffset + 0x1c, 0x1c);
         }
         public long getChapterTimeMillis()
         {
