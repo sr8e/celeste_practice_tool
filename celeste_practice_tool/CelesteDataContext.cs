@@ -108,10 +108,13 @@ namespace celeste_practice_tool
         }
         public void update(int cid, int side, RoomIdentifier room, int cd, int rd, long ctime, bool comp)
         {
-            if (comp && !compFlag)
+            if (comp)
             {
-                commitCurrentStat(true);
-                compFlag = true;
+                if (!compFlag)
+                {
+                    commitCurrentStat(true);
+                    compFlag = true;
+                }
                 return;
             }
             if (cid != chapterId)
