@@ -19,9 +19,11 @@ namespace celeste_practice_tool
 
         public CelesteProcess()
         {
+            Context = new();
+
+            tryHookProcess(0);
             hookObserver = Observable.Interval(TimeSpan.FromSeconds(5)).Subscribe(tryHookProcess);
             updateObserver = Observable.Interval(TimeSpan.FromMilliseconds(16)).Subscribe(updateDataContext);
-            Context = new();
         }
 
         public void tryHookProcess(long _)
@@ -35,6 +37,7 @@ namespace celeste_practice_tool
             if (procs.Length == 0)
             {
                 Debug.WriteLine("not hooked");
+                Context.StatusText = "Cannot found Celeste process. Retrying...";
                 refoffset = -1;
                 return;
             }
@@ -45,6 +48,7 @@ namespace celeste_practice_tool
             if (signaturePtr == IntPtr.Zero)
             {
                 Debug.WriteLine("signature not found...");
+                Context.StatusText = "Cannot find memory region.";
             }
             else
             {
@@ -70,11 +74,13 @@ namespace celeste_practice_tool
                 if (MemoryAccessor.ReadUTF16String(proc.Handle, basePtr, offs, 0) == "Celeste")
                 {
                     Debug.WriteLine(string.Format("Baseptr: {0}, size: {1}, ofs:{2}", basePtr, size, offs));
+                    Context.StatusText = "Successfully found memory region.";
                     refoffset = offs;
                     return;
                 }
             }
             Debug.WriteLine("title string not found");
+            Context.StatusText = "Cannot find memory region.";
         }
 
         public void updateDataContext(long _)

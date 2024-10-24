@@ -75,6 +75,17 @@ namespace celeste_practice_tool
         public int IndexOfStat => deathStatDict.Keys.Select((key, index) => (key, index))
             .Where(p => p.key.Equals(roomId)).Select(p => p.index).FirstOrDefault(-1);
 
+        private string statusText = "Initializing...";
+        public string StatusText
+        {
+            get { return statusText; }
+            set
+            {
+                statusText = value;
+                invokePropertyChange("StatusText");
+            }
+        }
+
         // implement INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         private void invokePropertyChange(string prop)
