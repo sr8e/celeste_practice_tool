@@ -182,6 +182,15 @@ namespace celeste_practice_tool
                 RoomDeathCount = rd;
             }
         }
+        public string dumpCsv()
+        {
+            return "chapter, side, room name, room name(aux), deaths, passes\n"
+                + string.Join('\n', statStore.Select(
+                    dicts => string.Join('\n', dicts.Value.Select(
+                        stat => $"{dicts.Key.Item1}, {dicts.Key.Item2}, {stat.Value.dump()}"
+                    )
+                )));
+        }
     }
     public class DeathStat
     {
@@ -204,6 +213,10 @@ namespace celeste_practice_tool
                 PrevSuccess++;
             }
             Passed = false;
+        }
+        public string dump()
+        {
+            return $"{RoomId.Item2}, {RoomId.Item1}, {TotalDeath}, {TotalSuccess}";
         }
     }
     public class RoomIdentifier : Tuple<string, string>
