@@ -13,6 +13,7 @@ namespace celeste_practice_tool
         private long chapterTime;
         private bool compFlag;
         private Dictionary<RoomIdentifier, DeathStat> deathStatDict = new();
+        private Dictionary<Tuple<Chapters, Sides>, Dictionary<RoomIdentifier, DeathStat>> statStore = new();
 
         // properties
         public Chapters ChapterName
@@ -104,8 +105,18 @@ namespace celeste_practice_tool
             }
             if (cid != chapterId)
             {
-                chapterId = cid;
-                invokePropertyChange("ChapterName");
+                Chapters c = (Chapters)cid;
+                if (Enum.IsDefined(c) && c != Chapters.Menu)
+                {
+                    Tuple<Chapters, Sides> key = Tuple.Create(c, (Sides)side);
+                    if (!statStore.ContainsKey(key))
+                    {
+                        statStore.Add(key, new());
+                    }
+                    deathStatDict = statStore[key];
+                    invokePropertyChange("DeathStats");
+                }
+                ChapterName = c;
             }
             if (side != chapterSide)
             {
